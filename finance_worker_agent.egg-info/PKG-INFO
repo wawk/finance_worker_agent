@@ -1,0 +1,5 @@
+Metadata-Version: 2.4
+Name: finance_worker_agent
+Version: 0.1.0
+Summary: Finance Worker built on platform_core
+Requires-Python: >=3.12

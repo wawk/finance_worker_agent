@@ -1,9 +1,7 @@
-import sys
-sys.path.insert(0, "/Users/stevem/projects/platform_core")
 
 from agents.worker_agent import WorkerAgent
 from providers.provider import Provider
-from models.bill import Bill
+from bill import Bill
 from dataclasses import asdict
 import os
 import json
@@ -23,6 +21,7 @@ class FinanceWorker(WorkerAgent):
                         changed_definition_callback=changed_definition_callback
                         )
                 self.bills = {}
+                self.load_bills()
 
     def add_bill(self,bill):
                      
@@ -50,6 +49,24 @@ class FinanceWorker(WorkerAgent):
                   json.dump(data, file, indent=4)
            
 
-    def load_bills():
-           pass
+    def load_bills(self):
+       self.bills = {}
+       try:
+              with open("data/bills.json", "r") as file:
+               data = json.load(file)
+           
+              for item in data:
+               self.add_bill(Bill.from_dict(item))
+       except FileNotFoundError:
+              print("No bill file found. Starting with empty bill list.")
+
+    def remove_bill(self, bill_name):
+             removed_bill = self.bills.pop(bill_name, None)
+             if removed_bill is not None:
+                   self.save_bills()
+             return removed_bill
+
+
+             
+              
            

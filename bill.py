@@ -1,5 +1,11 @@
 from dataclasses import dataclass,asdict
 from datetime import date
+from enum import Enum, auto
+class Field(Enum):
+    NAME = auto()
+    AMOUNT = auto()
+    DUE_DATE = auto()
+
 
 @dataclass
 class Bill:

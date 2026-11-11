@@ -1,8 +1,3 @@
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-sys.path.insert(0, "/Users/stevem/projects/platform_core")
 
 from finance_worker import FinanceWorker
 from bill import Bill
@@ -12,6 +7,7 @@ from models.worker_spec import WorkerSpec
 from datetime import date
 from dataclasses import asdict
 import os
+from datetime import date
 
 
 
@@ -44,10 +40,10 @@ def test_can_store_and_retrieve_bill():
      finance_agent = factory.create_worker_agent(worker_spec)
 
      finance_agent.add_bill(
-       Bill( "Electric Bill",
+       
+       )Bill( "Electric Bill",
         165.00,
         date(2026, 11, 14)
-       )
     )
 
      bill = finance_agent.get_bill("Electric Bill")
@@ -175,6 +171,64 @@ def test_bill_can_be_deserialized():
         assert bill.name == "Electric Bill"
         assert bill.amount == 165.00
         assert bill.due_date == date(2026, 11, 14)
+
+def test_finance_worker_can_load_bills():
+        kernel = Kernel()
+        factory = WorkerAgentFactory(kernel)
+        worker_spec = WorkerSpec(
+                "Rachel",
+                "A Helpful Finance AI",
+                worker_type = "finance",
+                worker_class = FinanceWorker
+                                          )
+        finance_agent = factory.create_worker_agent(worker_spec)
+
+        finance_agent.load_bills()
+        assert len(finance_agent.bills) == 3
+        bill = finance_agent.get_bill("Electric Bill")
+        assert bill is not None
+        assert bill.name == "Electric Bill"
+        assert bill.amount == 165.00
+        assert bill.due_date == date(2026, 11, 14)
+
+
+def test_finance_worker_can_remove_bills():
+        kernel = Kernel()
+        factory = WorkerAgentFactory(kernel)
+        worker_spec = WorkerSpec(
+                        "Rachel",
+                        "A Helpful Finance AI",
+                        worker_type = "finance",
+                        worker_class = FinanceWorker
+                                                  )
+        finance_agent = factory.create_worker_agent(worker_spec)
+
+        bill_removed = finance_agent.remove_bill("Mowing")
+
+        assert bill_removed
+        assert len(finance_agent.bills) == 2
+        assert finance_agent.get_bill("Mowing") is None
+
+def test_remove_bill_returns_none_when_bill_not_found():
+    kernel = Kernel()
+    factory = WorkerAgentFactory(kernel)
+    worker_spec = WorkerSpec(
+                           "Rachel",
+                           "A Helpful Finance AI",
+                           worker_type = "finance",
+                           worker_class = FinanceWorker
+                                                     )
+    finance_agent = factory.create_worker_agent(worker_spec)
+   
+    bill_removed = finance_agent.remove_bill("Entertainment")
+
+    assert bill_removed is None
+    assert len(finance_agent.bills) == 2
+    
+   
+        
+        
+
         
 
 

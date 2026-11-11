@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "finance_worker_agent"
+version = "0.1.0"
+description = "Finance Worker built on platform_core"
+requires-python = ">=3.12"
+
+[tool.setuptools]
+py-modules = [
+    "finance_worker",
+    "bill",
+    "bills"
+]
