@@ -2,6 +2,7 @@
 from agents.worker_agent import WorkerAgent
 from providers.provider import Provider
 from bill import Bill
+from bills import Bills
 from dataclasses import asdict
 import os
 import json
@@ -20,50 +21,63 @@ class FinanceWorker(WorkerAgent):
                         provider = provider,
                         changed_definition_callback=changed_definition_callback
                         )
-                self.bills = {}
-                self.load_bills()
+                self.bills = Bills()
+              #   self.bills = {}
+              #   self.load_bills()
+                self.bills.load()
 
     def add_bill(self,bill):
+          self.bills.add_bill(bill)
+            
                      
-            self.bills[bill.name] = bill
+       #      self.bills[bill.name] = bill
 
     def get_bill(self,name):
             if name is None:
                 return None
             if name.strip() == "":
                    return None
-            if name not in self.bills:
+            if not self.bills.has_bill(name):
+       #      if name not in self.bills:
                    return None
 
-            return self.bills[name]
+       #      return self.bills[name]
+            bill = self.bills.get_bill(name)
+            return bill
+                                  
 
     def list_bills(self):
-           return list(self.bills.values())
+          list = self.bills.list_bills()
+          return list
+       #     return list(self.bills.values())
 
     def save_bills(self):
-           data = [
-                  bill.to_dict() 
-                  for  bill in self.bills.values()
-                  ]
-           with open("data/bills.json", "w") as file:
-                  json.dump(data, file, indent=4)
+          self.bills.save()
+       #     data = [
+       #            bill.to_dict() 
+       #            for  bill in self.bills.values()
+       #            ]
+       #     with open("data/bills.json", "w") as file:
+       #            json.dump(data, file, indent=4)
            
 
     def load_bills(self):
-       self.bills = {}
-       try:
-              with open("data/bills.json", "r") as file:
-               data = json.load(file)
+           self.bills.load()
+       # self.bills = {}
+       # try:
+       #        with open("data/bills.json", "r") as file:
+       #         data = json.load(file)
            
-              for item in data:
-               self.add_bill(Bill.from_dict(item))
-       except FileNotFoundError:
-              print("No bill file found. Starting with empty bill list.")
+       #        for item in data:
+       #         self.add_bill(Bill.from_dict(item))
+       # except FileNotFoundError:
+       #        print("No bill file found. Starting with empty bill list.")
 
     def remove_bill(self, bill_name):
-             removed_bill = self.bills.pop(bill_name, None)
-             if removed_bill is not None:
-                   self.save_bills()
+             removed_bill = self.bills.remove_bill(bill_name)
+       #       removed_bill = self.bills.pop(bill_name, None)
+       #       if removed_bill is not None:
+              #      self.save_bills()
              return removed_bill
 
 

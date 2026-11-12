@@ -36,15 +36,14 @@ def test_can_store_and_retrieve_bill():
             worker_type = "finance",
             worker_class = FinanceWorker
         )
-    
      finance_agent = factory.create_worker_agent(worker_spec)
-
+    
      finance_agent.add_bill(
-       
-       )Bill( "Electric Bill",
-        165.00,
-        date(2026, 11, 14)
-    )
+                      Bill( "Electric Bill",
+                       165.00,
+                       date(2026, 11, 14)
+                      )
+                   )
 
      bill = finance_agent.get_bill("Electric Bill")
 
@@ -184,7 +183,8 @@ def test_finance_worker_can_load_bills():
         finance_agent = factory.create_worker_agent(worker_spec)
 
         finance_agent.load_bills()
-        assert len(finance_agent.bills) == 3
+        # assert len(finance_agent.bills) == 3
+        assert finance_agent.bills.bills_count == 3
         bill = finance_agent.get_bill("Electric Bill")
         assert bill is not None
         assert bill.name == "Electric Bill"
@@ -202,11 +202,33 @@ def test_finance_worker_can_remove_bills():
                         worker_class = FinanceWorker
                                                   )
         finance_agent = factory.create_worker_agent(worker_spec)
+        bill_1 = Bill(
+                                 "Electric Bill",
+                                 165.00,
+                                 date(2026, 11, 14)
+                         )
+                
+        bill_2 = Bill(
+                                 "Mowing",
+                                 155.0,
+                                 date(2026, 11, 14)
+                         )
+        bill_3 = Bill(
+                                 "Phones",
+                                 96.0,
+                                 date(2026, 11, 4)
+                         )
+                
+        finance_agent.add_bill(bill_1)
+        finance_agent.add_bill(bill_2)
+        finance_agent.add_bill(bill_3)
+        
+        finance_agent.save_bills()
 
         bill_removed = finance_agent.remove_bill("Mowing")
+        assert bill_removed is not None
 
-        assert bill_removed
-        assert len(finance_agent.bills) == 2
+        assert finance_agent.bills.bills_count == 2
         assert finance_agent.get_bill("Mowing") is None
 
 def test_remove_bill_returns_none_when_bill_not_found():
@@ -223,7 +245,7 @@ def test_remove_bill_returns_none_when_bill_not_found():
     bill_removed = finance_agent.remove_bill("Entertainment")
 
     assert bill_removed is None
-    assert len(finance_agent.bills) == 2
+    assert finance_agent.bills.bills_count == 2
     
    
         
