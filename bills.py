@@ -76,6 +76,29 @@ class Bills:
         self.save()
 
         return bill_to_update
+
+    
+
+    def get_largest_bill(self):
+    
+          if self.bills_count == 0:
+                return None
+          return max(
+                self._bills.values(),
+                key = lambda bill: bill.amount     
+          )
+
+    def get_smallest_bill(self):
+          if self.bills_count == 0:
+                return None
+          return min(
+                self._bills.values(),
+                key = lambda bill: bill.amount
+          )
+    
+
+         
+          
           
 
           
@@ -84,3 +107,10 @@ class Bills:
     @property
     def bills_count(self):
         return len(self._bills)
+
+    @property
+    def bills_total(self):
+          return sum(
+                bill.amount
+                for bill in self._bills.values()
+          )

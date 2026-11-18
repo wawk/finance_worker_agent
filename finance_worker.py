@@ -7,6 +7,8 @@ from dataclasses import asdict
 import os
 import json
 
+
+
 class FinanceWorker(WorkerAgent):
     def __init__(
             self, 
@@ -22,15 +24,13 @@ class FinanceWorker(WorkerAgent):
                         changed_definition_callback=changed_definition_callback
                         )
                 self.bills = Bills()
-              #   self.bills = {}
-              #   self.load_bills()
                 self.bills.load()
+
+
 
     def add_bill(self,bill):
           self.bills.add_bill(bill)
             
-                     
-       #      self.bills[bill.name] = bill
 
     def get_bill(self,name):
             if name is None:
@@ -38,10 +38,8 @@ class FinanceWorker(WorkerAgent):
             if name.strip() == "":
                    return None
             if not self.bills.has_bill(name):
-       #      if name not in self.bills:
                    return None
 
-       #      return self.bills[name]
             bill = self.bills.get_bill(name)
             return bill
                                   
@@ -49,36 +47,49 @@ class FinanceWorker(WorkerAgent):
     def list_bills(self):
           list = self.bills.list_bills()
           return list
-       #     return list(self.bills.values())
+
 
     def save_bills(self):
           self.bills.save()
-       #     data = [
-       #            bill.to_dict() 
-       #            for  bill in self.bills.values()
-       #            ]
-       #     with open("data/bills.json", "w") as file:
-       #            json.dump(data, file, indent=4)
-           
+       
 
     def load_bills(self):
            self.bills.load()
-       # self.bills = {}
-       # try:
-       #        with open("data/bills.json", "r") as file:
-       #         data = json.load(file)
-           
-       #        for item in data:
-       #         self.add_bill(Bill.from_dict(item))
-       # except FileNotFoundError:
-       #        print("No bill file found. Starting with empty bill list.")
-
+      
     def remove_bill(self, bill_name):
              removed_bill = self.bills.remove_bill(bill_name)
-       #       removed_bill = self.bills.pop(bill_name, None)
-       #       if removed_bill is not None:
-              #      self.save_bills()
              return removed_bill
+
+  
+    def get_bill_summary(self):
+               # Temporary for testing purposes only
+               total = self.bills.bills_total
+               bill_lines =  ""
+               for  bill in self.list_bills():
+                  bill_lines += (
+                    f" - {bill.name}: "
+                    f"${bill.amount:.2f} "
+                    f"{bill.due_date}\n"
+                                  )
+           
+               MOCK_BILL_SUMMARY = f"""
+                  Bill Summary
+           
+                  You currently have {self.bills.bills_count} bills.
+           
+                  Total obligations: ${total:.2f}
+           
+                  Bills:
+                  {bill_lines}
+                  """
+               return  MOCK_BILL_SUMMARY
+
+    def get_largest_bill(self):
+            return self.bills.get_largest_bill()
+
+    def get_smallest_bill(self):
+           return self.bills.get_smallest_bill()
+           
 
 
              

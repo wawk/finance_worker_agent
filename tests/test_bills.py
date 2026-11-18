@@ -141,6 +141,7 @@ def test_bills_can_remove_bill():
         assert removed_bill.name == "Entertainment"
         assert bills.bills_count == 3
         assert not bills.has_bill("Entertainment")
+        
 
 
 
