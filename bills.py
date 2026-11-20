@@ -53,7 +53,7 @@ class Bills:
         return bill_name in self._bills
 
     def list_bills(self):
-          return list(self._bills.values())
+          return list(self._bills)
 
     def update(
                 self, 

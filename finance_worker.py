@@ -26,6 +26,21 @@ class FinanceWorker(WorkerAgent):
                 self.bills = Bills()
                 self.bills.load()
 
+    def get_tool(self, name):
+        if name not in self.tool_registry:
+                return None
+        return self.tool_registry[name]
+
+    def use_tool(self, tool_name, func_name):
+           tool = self.get_tool(tool_name)
+           if tool is not None:
+                  return tool.exec(func_name)
+    def execute_tool_request(self, llm_tool_request):
+           tool = self.get_tool(llm_tool_request["tool"])
+           if tool is not None:
+            return tool.exec(llm_tool_request["function"])
+                  
+
 
 
     def add_bill(self,bill):
